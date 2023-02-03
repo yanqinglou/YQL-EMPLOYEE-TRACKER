@@ -36,21 +36,21 @@ function prompt_employee() {
     .then((data) => {
       if (data.action == "View All Department") {
         viewAllDepartment();
-        // prompt_employee();
+        prompt_employee();
       } else if (data.action == "View All Roles") {
         viewAllRoles();
-        // prompt_employee();
+        prompt_employee();
       } else if (data.action == "View All Employees") {
         viewAllEmployee();
-        // prompt_employee();
+        prompt_employee();
       } else if (data.action == "Add Employee") {
         addEmployee();
-        // prompt_employee();
+        prompt_employee();
       } else if (data.action == "Add Department") {
         console.log(data);
       }
       console.log("");
-    }).then (prompt_employee());
+    });
 }
 
 const viewAllDepartment = () => {
