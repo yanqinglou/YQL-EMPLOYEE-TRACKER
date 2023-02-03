@@ -45,11 +45,11 @@ function prompt_employee() {
         prompt_employee();
       } else if (data.action == "Add Employee") {
         addEmployee();
-        prompt_employee();
+        // prompt_employee();
       } else if (data.action == "Add Department") {
         console.log(data);
       }
-      console.log("");
+      // console.log("");
     });
 }
 
@@ -161,9 +161,28 @@ function addEmployee() {
           employee
           (first_name, last_name,role_id, manager_id)
           VALUES
-          (${data.first_name},${data.last_name},${roleID},${managerID})`,
+          ("${data.first_name}","${data.last_name}",${roleID},${managerID})`,
         function (err, results) {
-          console.table(results);
+          console.log(err)
+          db.query(
+            `SELECT 
+              employee.id, 
+              employee.first_name, 
+              employee.last_name, 
+              department_role.title, 
+              department.name,
+              department_role.salary, 
+              employee.manager_id 
+              FROM department_role
+              RIGHT JOIN employee
+              ON employee.role_id = department_role.id
+              LEFT JOIN department
+              ON department.id = department_role.department_id;`,
+            function (err, results) {
+              console.log(err)
+              console.table(results);
+            }
+          );
         }
       );
     });
