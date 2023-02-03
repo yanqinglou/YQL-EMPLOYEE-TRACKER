@@ -33,23 +33,24 @@ function prompt_employee() {
         ],
       },
     ])
-    .then(async (data) => {
+    .then((data) => {
       if (data.action == "View All Department") {
-        const department = await viewAllDepartment();
-        prompt_employee();
+        viewAllDepartment();
+        // prompt_employee();
       } else if (data.action == "View All Roles") {
         viewAllRoles();
-        prompt_employee();
+        // prompt_employee();
       } else if (data.action == "View All Employees") {
         viewAllEmployee();
-        prompt_employee();
+        // prompt_employee();
       } else if (data.action == "Add Employee") {
         addEmployee();
-      } else {
+        // prompt_employee();
+      } else if (data.action == "Add Department") {
         console.log(data);
       }
       console.log("");
-    });
+    }).then (prompt_employee());
 }
 
 const viewAllDepartment = () => {
@@ -103,30 +104,67 @@ function addEmployee() {
       {
         type: "list",
         message: "What is his/her role?",
-        name: "role_id",
-        choices: ["1.Sales Lead", "2.Salesperson", "3.Lead Engineer", "4.Software Engineer", "5.Account Manager", "6.Accountant", "7.Legal Team Lead", "8.Lawyer"]
+        name: "role",
+        choices: [
+          "Sales Lead",
+          "Salesperson",
+          "Lead Engineer",
+          "Software Engineer",
+          "Account Manager",
+          "Accountant",
+          "Legal Team Lead",
+          "Lawyer",
+        ],
       },
       {
         type: "list",
         message: "Who is his/her manager",
         name: "manager_id",
-        choices: ["1.Jun Zhang", "2.Jian Liu", "3.Hui Lee", "4.Jessy Cooper", "5.N/A"]
-      }
+        choices: ["Jun Zhang", "Jian Liu", "Hui Lee", "Jessy Cooper", "N/A"],
+      },
     ])
     .then((data) => {
-      roleID = data.role_id.split[0];
-      if (data.manager_id == "5.N/A"){
-        manager = "NULL"
-      }else
+      var roleID, managerID;
+      if (data.role == "Sales Lead") {
+        roleID = 1;
+      } else if (data.role == "Salesperson") {
+        roleID = 2;
+      } else if (data.role == "Lead Engineer") {
+        roleID = 3;
+      } else if (data.role == "Software Engineer") {
+        roleID = 4;
+      } else if (data.role == "Account Manager") {
+        roleID = 5;
+      } else if (data.role == "Accountant") {
+        roleID = 6;
+      } else if (data.role == "Legal Team Lead") {
+        roleID = 7;
+      } else {
+        roleID = 8;
+      }
+
+      if (data.manager_id == "Jun Zhang") {
+        managerID = 1;
+      } else if (data.manager_id == "Jian Liu") {
+        managerID = 3;
+      } else if (data.manager_id == "Hui Lee") {
+        managerID = 5;
+      } else if (data.manager_id == "Jessy Cooper") {
+        managerID = 7;
+      } else {
+        managerID = "NULL";
+      }
+      console.log(roleID);
+      console.log(managerID);
       db.query(
-        `INSERT INTO 
-        employee 
-        (first_name, last_name,role_id, manager_id) 
-        VALUES 
-        (${data.first_name},${data.last_name},${roleID},${manager})`,
+        `INSERT INTO
+          employee
+          (first_name, last_name,role_id, manager_id)
+          VALUES
+          (${data.first_name},${data.last_name},${roleID},${managerID})`,
         function (err, results) {
-          console.table(results);}
+          console.table(results);
+        }
       );
-      console.log(data);
     });
 }
