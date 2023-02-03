@@ -1,6 +1,6 @@
 USE company_employee_db;
 
-INSERT INTO department (role) 
+INSERT INTO department (name) 
 VALUES 
 ("Sales"),
 ("Engineering"),

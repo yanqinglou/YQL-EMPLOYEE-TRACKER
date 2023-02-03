@@ -1,6 +1,8 @@
 const inquirer = require("inquirer");
 const fs = require("fs");
 const mysql = require("mysql2");
+const { async } = require("rxjs");
+
 
 const db = mysql.createConnection(
   {
@@ -11,6 +13,9 @@ const db = mysql.createConnection(
   },
   console.log(`Connected to the classlist_db database.`)
 );
+
+prompt_employee();
+
 function prompt_employee() {
   inquirer
     .prompt([
@@ -29,18 +34,16 @@ function prompt_employee() {
         ],
       },
     ])
-    .then((data) => {
-      if (data.action == "View All Department") {
-        db.query("SELECT * FROM department", function (err, results) {
-          console.table(results);
-        });
+    .then ((data) => { 
+        if (data.action == "View All Department") {
+       db.query('SELECT * FROM `department`',function (err,results){
+        console.table(results)
+       })
       } else if (data.action == "View All Roles") {
-        db.query("SELECT * FROM department_role", function (err, results) {
-          console.table(results);
-        });
+        db.query('SELECT * FROM `department_role`',function (err,results){
+            console.table(results)})
       } else if (data.action == "View All Employees") {
-        db.query(
-          "SELECT employee.id, employee.first_name, employee.last_name, department_role.title, department_role.department_id, department_role.salary FROM employee JOIN department_role ON employee.role_id = department_role.department_id",
+        db.query('SELECT employee.id, employee.first_name, employee.last_name, department_role.title, department_role.department_id, department_role.salary, manager_id FROM department_role JOIN employee ON employee.role_id = department_role.department_id',
           function (err, results) {
             console.table(results);
           }
@@ -50,8 +53,38 @@ function prompt_employee() {
       } else {
         console.log(data);
       }
-    //   prompt_employee();
-    });
-}
+      console.log("")
+    }
+)}
 
-prompt_employee();
+function add_employee() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          message: "What is the first name of the employee ",
+          name: "first_name"
+        },
+        {
+            type: "input",
+            message: "What is the last name of the employee ",
+            name: "last_name"
+        },
+        {
+            type: "list",
+            message: "What is this employee's role in the company?",
+            name: "role_id",
+            choices: [
+              "View All Employees",
+              "Add Employee",
+              "Update Employee Role",
+              "View All Roles",
+              "Add Role",
+              "View All Department",
+              "Add Department",
+            ],
+          },
+      ])
+      .then((data) => {return data})
+    }
+
